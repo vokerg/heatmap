@@ -1,0 +1,33 @@
+<div class="shell" [attr.data-ready]="ready()">
+  <header class="topbar">
+    <div class="brand" aria-label="Heatmap home">
+      <span class="brand-mark" aria-hidden="true">⌁</span>
+      <span>Heatmap</span>
+    </div>
+    <div class="summary" aria-label="Dataset summary">
+      <strong data-testid="activity-count">{{ activityCount() | number }}</strong>
+      <span>activities</span>
+      <span class="divider">·</span>
+      <strong>{{ distanceKilometers() | number: '1.0-0' }}</strong>
+      <span>km</span>
+    </div>
+    <button class="reset" type="button" (click)="resetView()">Reset view</button>
+  </header>
+
+  <main class="map-frame">
+    <div #mapContainer class="map" aria-label="Activity heatmap"></div>
+    <section class="floating-card" aria-label="Heatmap explanation">
+      <span class="eyebrow">ALL SPORTS</span>
+      <h1>Your activity density</h1>
+      <p>Corridors merge as you zoom out and resolve into individual routes at street level.</p>
+      <div class="zoom-readout">Zoom {{ zoom() | number: '1.1-1' }}</div>
+    </section>
+    <div class="legend" aria-label="Heatmap density legend">
+      <span>Less</span>
+      <i class="density density-low"></i>
+      <i class="density density-mid"></i>
+      <i class="density density-high"></i>
+      <span>More</span>
+    </div>
+  </main>
+</div>

@@ -1,3 +1,71 @@
 # Heatmap
 
-Self-hosted activity heatmap project. Active development happens on feature branches and is squash-merged to `main` through pull requests.
+A self-hosted activity heatmap inspired by the behavior of Strava's global heatmap: dense activity corridors merge at low zoom, while individual route structure becomes visible as the map is zoomed in.
+
+## What is implemented
+
+- Angular 22 + MapLibre GL frontend.
+- Node.js 24 + Fastify API.
+- PostgreSQL/PostGIS activity storage.
+- Zoom-dependent Mapbox Vector Tiles generated directly by PostGIS.
+- Point-density heatmap layers for smooth joining at low zoom, plus a sharp route layer at street zoom.
+- Deterministic sample activities around Værløse and Bagsværd, Denmark.
+- Unit tests and Playwright visual-smoke tests.
+- GitHub Actions that upload overview/detail screenshots as build artifacts.
+- Docker Compose for a complete local stack.
+
+## Quick start
+
+Requirements: Node.js 24.15+, npm, and Docker with Compose.
+
+```bash
+cp .env.example .env
+docker compose up -d db
+npm install
+npm run db:migrate
+npm run db:seed
+npm run dev
+```
+
+Open `http://localhost:4200`. The API listens on `http://localhost:3000`.
+
+For an entirely containerized run:
+
+```bash
+docker compose up --build
+```
+
+Open `http://localhost:8080`.
+
+## Useful commands
+
+```bash
+npm run check          # API typecheck + Angular production build
+npm test               # API unit tests
+npm run test:visual    # Playwright screenshots and smoke assertions
+npm run db:migrate     # Apply PostGIS schema migrations
+npm run db:seed        # Replace sample activities with deterministic seed data
+```
+
+## Heatmap behavior
+
+The tile endpoint samples each activity line at a distance derived from meters-per-pixel for the requested zoom. Samples are snapped to a zoom-dependent grid and grouped into weighted points. MapLibre renders those points as a heatmap, which naturally joins nearby routes at lower zooms. From zoom 13 onward, a second MVT layer adds simplified activity lines for street-level sharpness.
+
+This is intentionally an MVP query path. For a large personal Strava archive, the next scaling step is a materialized density pyramid populated during import; see [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+
+## Data import
+
+The initial API accepts GeoJSON `LineString` activities. The included sample file is `samples/activities.geojson`. GPX/FIT/Strava archive import is deliberately left as a follow-up so the rendering and storage model can stabilize first.
+
+## Visual artifacts
+
+The `visual` GitHub Actions job starts PostGIS, seeds the sample dataset, launches the API and Angular app, and stores two screenshots:
+
+- `overview.png` — joined regional corridors.
+- `detail.png` — street-level route structure.
+
+Run the `Task runner` workflow manually with `visual` to create a fresh artifact without changing code.
+
+## Contribution workflow
+
+All work is done on branches and through pull requests. Every completed PR must be **squash merged** into `main`. See [AGENTS.md](AGENTS.md) for the handoff and task-registration rules.
