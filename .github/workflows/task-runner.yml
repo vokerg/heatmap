@@ -1,0 +1,67 @@
+name: Task runner
+
+on:
+  workflow_dispatch:
+    inputs:
+      task:
+        description: Registered repository task
+        required: true
+        type: choice
+        options:
+          - quality
+          - visual
+          - database-smoke
+
+permissions:
+  contents: read
+
+jobs:
+  run-task:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgis/postgis:17-3.5
+        env:
+          POSTGRES_DB: heatmap
+          POSTGRES_USER: heatmap
+          POSTGRES_PASSWORD: heatmap
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U heatmap -d heatmap"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+    env:
+      DATABASE_URL: postgres://heatmap:heatmap@127.0.0.1:5432/heatmap
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.18.0
+      - run: npm install
+      - run: npm run db:migrate
+      - run: npm run db:seed
+      - name: Quality task
+        if: inputs.task == 'quality'
+        run: npm run check && npm test
+      - name: Database smoke task
+        if: inputs.task == 'database-smoke'
+        run: docker exec ${{ job.services.postgres.id }} psql -U heatmap -d heatmap -c 'select sport_type, count(*) from activities group by sport_type order by sport_type'
+      - name: Install browser
+        if: inputs.task == 'visual'
+        run: npx playwright install --with-deps chromium
+      - name: Visual task
+        if: inputs.task == 'visual'
+        run: npm run test:visual
+      - name: Upload visual task artifacts
+        if: always() && inputs.task == 'visual'
+        uses: actions/upload-artifact@v4
+        with:
+          name: heatmap-visual-task-${{ github.run_id }}
+          path: |
+            test-results/**/overview.png
+            test-results/**/detail.png
+            playwright-report/
+          if-no-files-found: warn
+          retention-days: 30

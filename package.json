@@ -1,0 +1,29 @@
+{
+  "name": "heatmap",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Self-hosted Strava-style activity heatmap",
+  "engines": {
+    "node": ">=24.15.0"
+  },
+  "workspaces": [
+    "apps/api",
+    "apps/web"
+  ],
+  "scripts": {
+    "build": "npm run build -w @heatmap/api && npm run build -w @heatmap/web",
+    "check": "npm run typecheck -w @heatmap/api && npm run build -w @heatmap/web",
+    "dev": "concurrently -k -n api,web -c auto \"npm run dev -w @heatmap/api\" \"npm run start -w @heatmap/web\"",
+    "db:migrate": "npm run db:migrate -w @heatmap/api",
+    "db:seed": "npm run db:seed -w @heatmap/api",
+    "test": "npm run test -w @heatmap/api",
+    "test:visual": "playwright test",
+    "format:check": "prettier --check .",
+    "format": "prettier --write ."
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.55.0",
+    "concurrently": "^9.2.0",
+    "prettier": "^3.6.2"
+  }
+}

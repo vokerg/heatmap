@@ -1,0 +1,43 @@
+services:
+  db:
+    image: postgis/postgis:17-3.5
+    environment:
+      POSTGRES_DB: heatmap
+      POSTGRES_USER: heatmap
+      POSTGRES_PASSWORD: heatmap
+    ports:
+      - "5432:5432"
+    volumes:
+      - heatmap-db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U heatmap -d heatmap"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    environment:
+      DATABASE_URL: postgres://heatmap:heatmap@db:5432/heatmap
+      HOST: 0.0.0.0
+      PORT: 3000
+      WEB_ORIGIN: http://localhost:8080
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "3000:3000"
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    depends_on:
+      - api
+    ports:
+      - "8080:80"
+
+volumes:
+  heatmap-db:

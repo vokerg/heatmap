@@ -1,0 +1,325 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Bagsvaerd station loop",
+        "sportType": "Ride"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            12.441,
+            55.759
+          ],
+          [
+            12.447,
+            55.762
+          ],
+          [
+            12.451,
+            55.767
+          ],
+          [
+            12.446,
+            55.771
+          ],
+          [
+            12.437,
+            55.77
+          ],
+          [
+            12.432,
+            55.765
+          ],
+          [
+            12.436,
+            55.76
+          ],
+          [
+            12.441,
+            55.759
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Bagsvaerd to Vaerloese",
+        "sportType": "Ride"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            12.448,
+            55.762
+          ],
+          [
+            12.434,
+            55.767
+          ],
+          [
+            12.421,
+            55.773
+          ],
+          [
+            12.405,
+            55.779
+          ],
+          [
+            12.389,
+            55.785
+          ],
+          [
+            12.371,
+            55.79
+          ],
+          [
+            12.356,
+            55.792
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Hareskov forest diagonal",
+        "sportType": "Run"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            12.454,
+            55.754
+          ],
+          [
+            12.438,
+            55.764
+          ],
+          [
+            12.421,
+            55.773
+          ],
+          [
+            12.405,
+            55.782
+          ],
+          [
+            12.388,
+            55.79
+          ],
+          [
+            12.371,
+            55.799
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Ring road east west",
+        "sportType": "Ride"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            12.337,
+            55.775
+          ],
+          [
+            12.357,
+            55.775
+          ],
+          [
+            12.377,
+            55.774
+          ],
+          [
+            12.398,
+            55.771
+          ],
+          [
+            12.42,
+            55.768
+          ],
+          [
+            12.442,
+            55.765
+          ],
+          [
+            12.466,
+            55.763
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Furesoe north corridor",
+        "sportType": "Ride"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            12.344,
+            55.802
+          ],
+          [
+            12.362,
+            55.807
+          ],
+          [
+            12.384,
+            55.811
+          ],
+          [
+            12.408,
+            55.811
+          ],
+          [
+            12.431,
+            55.807
+          ],
+          [
+            12.451,
+            55.801
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Forest switchbacks",
+        "sportType": "Run"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            12.371,
+            55.783
+          ],
+          [
+            12.378,
+            55.788
+          ],
+          [
+            12.386,
+            55.785
+          ],
+          [
+            12.393,
+            55.792
+          ],
+          [
+            12.402,
+            55.788
+          ],
+          [
+            12.411,
+            55.795
+          ],
+          [
+            12.419,
+            55.789
+          ],
+          [
+            12.427,
+            55.796
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Bagsvaerd south loop",
+        "sportType": "Ride"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            12.446,
+            55.761
+          ],
+          [
+            12.455,
+            55.752
+          ],
+          [
+            12.448,
+            55.744
+          ],
+          [
+            12.432,
+            55.742
+          ],
+          [
+            12.418,
+            55.748
+          ],
+          [
+            12.421,
+            55.757
+          ],
+          [
+            12.433,
+            55.763
+          ],
+          [
+            12.446,
+            55.761
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Vaerloese local grid",
+        "sportType": "Run"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            12.352,
+            55.793
+          ],
+          [
+            12.361,
+            55.793
+          ],
+          [
+            12.365,
+            55.8
+          ],
+          [
+            12.355,
+            55.803
+          ],
+          [
+            12.347,
+            55.799
+          ],
+          [
+            12.352,
+            55.793
+          ]
+        ]
+      }
+    }
+  ]
+}

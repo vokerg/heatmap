@@ -1,0 +1,26 @@
+name: Engineering task
+description: Register a scoped implementation or investigation task
+title: "[Task]: "
+labels: ["task"]
+body:
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Required outcome
+      description: State the observable result, not only the implementation idea.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      placeholder: |
+        - [ ] Behavior is covered by tests
+        - [ ] Visual artifact is attached when rendering changes
+        - [ ] Any new command is registered in GitHub Actions
+    validations:
+      required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: Technical notes
