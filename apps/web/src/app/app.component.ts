@@ -51,7 +51,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       zoom,
       minZoom: 6,
       maxZoom: 18,
-      attributionControl: !this.visualMode,
+      attributionControl: this.visualMode ? false : { compact: true },
       fadeDuration: 0,
     });
 
