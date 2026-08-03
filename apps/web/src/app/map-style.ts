@@ -1,6 +1,6 @@
 import type { StyleSpecification } from 'maplibre-gl';
 
-export function createMapStyle(visualMode: boolean): StyleSpecification {
+export function createMapStyle(visualMode: boolean, fileStorage = false): StyleSpecification {
   const basemapSources: StyleSpecification['sources'] = visualMode
     ? {
         reference: {
@@ -91,10 +91,9 @@ export function createMapStyle(visualMode: boolean): StyleSpecification {
     sources: {
       ...basemapSources,
       heatmap: {
-        type: 'vector',
-        tiles: [`${window.location.origin}/api/tiles/{z}/{x}/{y}.mvt`],
-        minzoom: 6,
-        maxzoom: 18,
+        ...(fileStorage
+          ? { type: 'geojson' as const, data: `${window.location.origin}/api/heatmap.geojson` }
+          : { type: 'vector' as const, tiles: [`${window.location.origin}/api/tiles/{z}/{x}/{y}.mvt`], minzoom: 6, maxzoom: 18 }),
       },
     },
     layers: [
@@ -108,7 +107,8 @@ export function createMapStyle(visualMode: boolean): StyleSpecification {
         id: 'heatmap-halo',
         type: 'heatmap',
         source: 'heatmap',
-        'source-layer': 'density',
+        ...(fileStorage ? {} : { 'source-layer': 'density' }),
+        ...(fileStorage ? { filter: ['==', ['get', 'kind'], 'density'] } : {}),
         maxzoom: 18,
         paint: {
           'heatmap-weight': [
@@ -146,7 +146,8 @@ export function createMapStyle(visualMode: boolean): StyleSpecification {
         id: 'heatmap-core',
         type: 'heatmap',
         source: 'heatmap',
-        'source-layer': 'density',
+        ...(fileStorage ? {} : { 'source-layer': 'density' }),
+        ...(fileStorage ? { filter: ['==', ['get', 'kind'], 'density'] } : {}),
         minzoom: 9,
         maxzoom: 18,
         paint: {
@@ -183,7 +184,8 @@ export function createMapStyle(visualMode: boolean): StyleSpecification {
         id: 'route-glow',
         type: 'line',
         source: 'heatmap',
-        'source-layer': 'routes',
+        ...(fileStorage ? {} : { 'source-layer': 'routes' }),
+        ...(fileStorage ? { filter: ['==', ['get', 'kind'], 'route'] } : {}),
         minzoom: 13,
         paint: {
           'line-color': '#6b20ef',
@@ -196,7 +198,8 @@ export function createMapStyle(visualMode: boolean): StyleSpecification {
         id: 'route-core',
         type: 'line',
         source: 'heatmap',
-        'source-layer': 'routes',
+        ...(fileStorage ? {} : { 'source-layer': 'routes' }),
+        ...(fileStorage ? { filter: ['==', ['get', 'kind'], 'route'] } : {}),
         minzoom: 14,
         paint: {
           'line-color': '#5010ca',

@@ -4,7 +4,7 @@ import { loadConfig } from '../config.js';
 import { createPool } from '../db/pool.js';
 import { buildTileQuery } from './tile-query.js';
 
-describe('heatmap tile query against PostGIS', () => {
+describe.skipIf(loadConfig().STORAGE_MODE !== 'postgres')('heatmap tile query against PostGIS', () => {
   let pool: Pool;
 
   beforeAll(() => {

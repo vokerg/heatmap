@@ -6,9 +6,14 @@ import { createPool } from './pool.js';
 
 const currentDirectory = fileURLToPath(new URL('.', import.meta.url));
 const migrationsDirectory = resolve(currentDirectory, '../../../../db/migrations');
-const pool = createPool(loadConfig());
+const config = loadConfig();
+const pool = config.STORAGE_MODE === 'postgres' ? createPool(config) : undefined;
 
 async function migrate(): Promise<void> {
+  if (!pool) {
+    console.log('File-backed storage is enabled; no database migrations are needed.');
+    return;
+  }
   const client = await pool.connect();
   try {
     await client.query('BEGIN');

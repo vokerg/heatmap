@@ -11,6 +11,7 @@ on:
           - quality
           - visual
           - database-smoke
+          - database-setup
 
 permissions:
   contents: read
@@ -40,6 +41,9 @@ jobs:
         with:
           node-version: 24.18.0
       - run: npm install
+      - name: Database setup task
+        if: inputs.task == 'database-setup'
+        run: npm run db:setup
       - run: npm run db:migrate
       - run: npm run db:seed
       - name: Quality task

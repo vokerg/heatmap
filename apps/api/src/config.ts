@@ -1,6 +1,8 @@
 import { z } from 'zod';
 
 const environmentSchema = z.object({
+  STORAGE_MODE: z.enum(['file', 'postgres']).default('file'),
+  DATA_FILE: z.string().default('../../data/heatmap.json'),
   DATABASE_URL: z
     .string()
     .default('postgres://heatmap:heatmap@localhost:5432/heatmap'),

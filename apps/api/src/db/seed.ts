@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { z } from 'zod';
 import { loadConfig } from '../config.js';
 import { createPool } from './pool.js';
+import { FileStore } from './file-store.js';
 
 const featureCollectionSchema = z.object({
   type: z.literal('FeatureCollection'),
@@ -37,7 +38,29 @@ async function seed(): Promise<void> {
   const sample = featureCollectionSchema.parse(
     JSON.parse(await readFile(samplePath, 'utf8')),
   );
-  const pool = createPool(loadConfig());
+  const config = loadConfig();
+  if (config.STORAGE_MODE === 'file') {
+    const store = await FileStore.open(config.DATA_FILE);
+    await store.deleteSource('sample');
+    let activityIndex = 0;
+    for (const [routeIndex, feature] of sample.features.entries()) {
+      for (const variantIndex of offsets.keys()) {
+        activityIndex += 1;
+        await store.upsert({
+          externalId: `sample-${routeIndex + 1}-${variantIndex + 1}`,
+          sportType: String(feature.properties['sportType'] ?? 'Ride'),
+          name: String(feature.properties['name'] ?? `Route ${routeIndex + 1}`),
+          startedAt: new Date(Date.UTC(2025, routeIndex % 12, variantIndex + 1)).toISOString(),
+          source: 'sample',
+          geometry: feature.geometry,
+          metadata: { fixture: true, variant: variantIndex + 1 },
+        });
+      }
+    }
+    console.log(`Seeded ${activityIndex} deterministic file-backed sample activities.`);
+    return;
+  }
+  const pool = createPool(config);
   const client = await pool.connect();
 
   try {

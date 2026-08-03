@@ -16,6 +16,7 @@
     "dev": "concurrently -k -n api,web -c auto \"npm run dev -w @heatmap/api\" \"npm run start -w @heatmap/web\"",
     "db:migrate": "npm run db:migrate -w @heatmap/api",
     "db:seed": "npm run db:seed -w @heatmap/api",
+    "db:setup": "npm run db:setup -w @heatmap/api",
     "test": "npm run test -w @heatmap/api",
     "test:visual": "playwright test",
     "format:check": "prettier --check .",

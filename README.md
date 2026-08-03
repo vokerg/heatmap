@@ -16,16 +16,29 @@ A self-hosted activity heatmap inspired by the behavior of Strava's global heatm
 
 ## Quick start
 
-Requirements: Node.js 24.15+, npm, and Docker with Compose.
+Requirements: Node.js 24.15+ and npm. The default file-backed storage needs no
+database installation.
 
 ```bash
 cp .env.example .env
-docker compose up -d db
 npm install
+npm run db:setup
 npm run db:migrate
 npm run db:seed
 npm run dev
 ```
+
+This stores activities in `data/heatmap.json`, which is ignored by Git. In this
+mode `db:setup` and `db:migrate` are safe no-ops; `db:seed` loads the bundled
+deterministic sample data.
+
+## PostgreSQL/PostGIS option
+
+Set `STORAGE_MODE=postgres` in `.env`, set `DATABASE_URL` to your PostgreSQL
+credentials, and install PostGIS for the same PostgreSQL version. Then
+`db:setup` creates the database and verifies PostGIS; the configured role must
+be allowed to create databases and extensions. Docker Compose remains available
+as an alternative PostGIS server.
 
 Open `http://localhost:4200`. The API listens on `http://localhost:3000`.
 
@@ -45,6 +58,7 @@ npm test               # API unit tests
 npm run test:visual    # Playwright screenshots and smoke assertions
 npm run db:migrate     # Apply PostGIS schema migrations
 npm run db:seed        # Replace sample activities with deterministic seed data
+npm run db:setup       # Create the configured database and verify PostGIS
 ```
 
 ## Heatmap behavior

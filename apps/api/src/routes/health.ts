@@ -5,6 +5,7 @@ export async function registerHealthRoutes(
   app: FastifyInstance,
   pool: Pool,
 ): Promise<void> {
+  app.get('/api/config', async () => ({ storageMode: 'postgres' }));
   app.get('/api/health', async () => {
     const result = await pool.query<{ now: string }>('SELECT now()::text AS now');
     return {

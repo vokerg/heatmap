@@ -34,7 +34,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   protected readonly ready = signal(false);
   protected readonly visualMode = new URLSearchParams(window.location.search).get('visual') === '1';
 
-  ngAfterViewInit(): void {
+  async ngAfterViewInit(): Promise<void> {
     const parameters = new URLSearchParams(window.location.search);
     const requestedCenter = parameters.get('center')?.split(',').map(Number);
     const requestedZoom = Number(parameters.get('zoom'));
@@ -44,9 +44,13 @@ export class AppComponent implements AfterViewInit, OnDestroy {
         : [12.407, 55.775];
     const zoom = Number.isFinite(requestedZoom) ? requestedZoom : 11.2;
 
+    const storageMode = await fetch('/api/config')
+      .then(async (response) => (response.ok ? (await response.json() as { storageMode?: string }).storageMode : 'postgres'))
+      .catch(() => 'postgres');
+
     this.map = new maplibregl.Map({
       container: this.mapContainer.nativeElement,
-      style: createMapStyle(this.visualMode),
+      style: createMapStyle(this.visualMode, storageMode === 'file'),
       center,
       zoom,
       minZoom: 6,
