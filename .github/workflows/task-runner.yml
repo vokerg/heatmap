@@ -34,6 +34,8 @@ jobs:
           --health-timeout 5s
           --health-retries 20
     env:
+      STORAGE_MODE: ${{ inputs.task == 'visual' && 'file' || 'postgres' }}
+      DATA_FILE: ../../data/task-heatmap.json
       DATABASE_URL: postgres://heatmap:heatmap@127.0.0.1:5432/heatmap
     steps:
       - uses: actions/checkout@v4
