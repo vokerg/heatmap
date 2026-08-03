@@ -16,7 +16,7 @@
   z-index: 2;
   display: flex;
   align-items: center;
-  gap: 22px;
+  gap: 18px;
   padding: 0 18px;
   border-bottom: 1px solid #d7dbde;
   background: rgba(255, 255, 255, 0.96);
@@ -64,15 +64,54 @@
   color: #a3abb1;
 }
 
-.reset {
+.import-controls {
+  display: flex;
+  align-items: center;
+  gap: 7px;
   margin-left: auto;
-  padding: 8px 12px;
+}
+
+.import-controls select,
+.import,
+.reset {
+  min-height: 34px;
+  padding: 7px 11px;
   border: 1px solid #d4d9dc;
   border-radius: 7px;
   color: #303941;
   background: white;
   font-weight: 650;
+}
+
+.import-controls select {
+  color: #58636b;
+  font-size: 12px;
+}
+
+.import,
+.reset {
   cursor: pointer;
+}
+
+.import {
+  border-color: #6f2ae7;
+  color: white;
+  background: #6f2ae7;
+}
+
+.import:disabled {
+  cursor: progress;
+  opacity: 0.65;
+}
+
+.file-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
 .map-frame,
@@ -123,6 +162,27 @@ p {
   font-weight: 700;
 }
 
+.import-status {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  max-width: min(460px, calc(100% - 40px));
+  padding: 10px 13px;
+  border: 1px solid rgba(87, 44, 177, 0.22);
+  border-radius: 8px;
+  color: #3d216f;
+  background: rgba(250, 247, 255, 0.94);
+  box-shadow: 0 8px 24px rgba(31, 39, 45, 0.16);
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.import-status-error {
+  border-color: rgba(174, 47, 47, 0.28);
+  color: #842828;
+  background: rgba(255, 247, 247, 0.96);
+}
+
 .legend {
   position: absolute;
   right: 18px;
@@ -158,13 +218,40 @@ p {
   background: #3d008f;
 }
 
-@media (max-width: 680px) {
-  .summary {
+@media (max-width: 860px) {
+  .summary,
+  .import-controls select {
     display: none;
+  }
+
+  .brand {
+    min-width: 0;
+  }
+}
+
+@media (max-width: 680px) {
+  .topbar {
+    gap: 8px;
+    padding: 0 10px;
+  }
+
+  .brand span:last-child {
+    display: none;
+  }
+
+  .import-controls {
+    margin-left: auto;
   }
 
   .floating-card {
     top: 12px;
+    left: 12px;
+  }
+
+  .import-status {
+    top: auto;
+    right: 12px;
+    bottom: 58px;
     left: 12px;
   }
 }
