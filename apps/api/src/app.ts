@@ -19,6 +19,7 @@ function statusCodeFor(error: unknown): number {
 
 export async function buildApp(config: AppConfig, pool: Pool): Promise<FastifyInstance> {
   const app = Fastify({
+    bodyLimit: 50 * 1024 * 1024,
     logger: {
       level: process.env['NODE_ENV'] === 'test' ? 'silent' : 'info',
     },
@@ -37,6 +38,7 @@ export async function buildApp(config: AppConfig, pool: Pool): Promise<FastifyIn
     });
   });
 
+  app.get('/api/config', async () => ({ storageMode: 'postgres' }));
   await registerHealthRoutes(app, pool);
   await registerActivityRoutes(app, pool);
   await registerTileRoutes(app, pool);
