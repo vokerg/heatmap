@@ -123,7 +123,7 @@ export function createMapStyle(
         ...(fileStorage
           ? { filter: ['==', ['get', 'kind'], 'density'] }
           : {}),
-        maxzoom: 17,
+        maxzoom: fileStorage ? 14.7 : 17,
         paint: {
           'heatmap-weight': [
             'interpolate',
@@ -160,19 +160,31 @@ export function createMapStyle(
             17,
             12,
           ],
-          'heatmap-opacity': [
-            'interpolate',
-            ['linear'],
-            ['zoom'],
-            6,
-            0.72,
-            13,
-            0.58,
-            15,
-            0.32,
-            17,
-            0,
-          ],
+          'heatmap-opacity': fileStorage
+            ? [
+                'interpolate',
+                ['linear'],
+                ['zoom'],
+                6,
+                0.72,
+                13,
+                0.55,
+                14.7,
+                0,
+              ]
+            : [
+                'interpolate',
+                ['linear'],
+                ['zoom'],
+                6,
+                0.72,
+                13,
+                0.58,
+                15,
+                0.32,
+                17,
+                0,
+              ],
           'heatmap-color': [
             'interpolate',
             ['linear'],
@@ -199,7 +211,7 @@ export function createMapStyle(
           ? { filter: ['==', ['get', 'kind'], 'density'] }
           : {}),
         minzoom: 9,
-        maxzoom: 17,
+        maxzoom: fileStorage ? 14.5 : 17,
         paint: {
           'heatmap-weight': [
             'interpolate',
@@ -234,19 +246,31 @@ export function createMapStyle(
             16,
             7,
           ],
-          'heatmap-opacity': [
-            'interpolate',
-            ['linear'],
-            ['zoom'],
-            9,
-            0.75,
-            14,
-            0.5,
-            16,
-            0.18,
-            17,
-            0,
-          ],
+          'heatmap-opacity': fileStorage
+            ? [
+                'interpolate',
+                ['linear'],
+                ['zoom'],
+                9,
+                0.75,
+                13,
+                0.5,
+                14.5,
+                0,
+              ]
+            : [
+                'interpolate',
+                ['linear'],
+                ['zoom'],
+                9,
+                0.75,
+                14,
+                0.5,
+                16,
+                0.18,
+                17,
+                0,
+              ],
           'heatmap-color': [
             'interpolate',
             ['linear'],
