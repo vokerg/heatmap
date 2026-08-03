@@ -51,6 +51,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
         ? [requestedCenter[0]!, requestedCenter[1]!]
         : [12.407, 55.775];
     const zoom = Number.isFinite(requestedZoom) ? requestedZoom : 11.2;
+    this.zoom.set(zoom);
 
     this.storageMode = await fetch('/api/config')
       .then(async (response) => {
