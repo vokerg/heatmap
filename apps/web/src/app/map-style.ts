@@ -1,6 +1,10 @@
 import type { StyleSpecification } from 'maplibre-gl';
 
-export function createMapStyle(visualMode: boolean, fileStorage = false): StyleSpecification {
+export function createMapStyle(
+  visualMode: boolean,
+  fileStorage = false,
+  revision = 0,
+): StyleSpecification {
   const basemapSources: StyleSpecification['sources'] = visualMode
     ? {
         reference: {
@@ -90,11 +94,19 @@ export function createMapStyle(visualMode: boolean, fileStorage = false): StyleS
     glyphs: 'https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf',
     sources: {
       ...basemapSources,
-      heatmap: {
-        ...(fileStorage
-          ? { type: 'geojson' as const, data: `${window.location.origin}/api/heatmap.geojson` }
-          : { type: 'vector' as const, tiles: [`${window.location.origin}/api/tiles/{z}/{x}/{y}.mvt`], minzoom: 6, maxzoom: 18 }),
-      },
+      heatmap: fileStorage
+        ? {
+            type: 'geojson',
+            data: `${window.location.origin}/api/heatmap.geojson?v=${revision}`,
+          }
+        : {
+            type: 'vector',
+            tiles: [
+              `${window.location.origin}/api/tiles/{z}/{x}/{y}.mvt?v=${revision}`,
+            ],
+            minzoom: 6,
+            maxzoom: 18,
+          },
     },
     layers: [
       {
@@ -108,8 +120,10 @@ export function createMapStyle(visualMode: boolean, fileStorage = false): StyleS
         type: 'heatmap',
         source: 'heatmap',
         ...(fileStorage ? {} : { 'source-layer': 'density' }),
-        ...(fileStorage ? { filter: ['==', ['get', 'kind'], 'density'] } : {}),
-        maxzoom: 18,
+        ...(fileStorage
+          ? { filter: ['==', ['get', 'kind'], 'density'] }
+          : {}),
+        maxzoom: fileStorage ? 14.7 : 17,
         paint: {
           'heatmap-weight': [
             'interpolate',
@@ -122,9 +136,55 @@ export function createMapStyle(visualMode: boolean, fileStorage = false): StyleS
             18,
             1,
           ],
-          'heatmap-intensity': ['interpolate', ['linear'], ['zoom'], 7, 0.85, 13, 1.25, 18, 1.75],
-          'heatmap-radius': ['interpolate', ['linear'], ['zoom'], 7, 5, 11, 9, 15, 15, 18, 24],
-          'heatmap-opacity': ['interpolate', ['linear'], ['zoom'], 6, 0.72, 13, 0.64, 18, 0.44],
+          'heatmap-intensity': [
+            'interpolate',
+            ['linear'],
+            ['zoom'],
+            7,
+            0.85,
+            13,
+            1.15,
+            16,
+            1.3,
+          ],
+          'heatmap-radius': [
+            'interpolate',
+            ['linear'],
+            ['zoom'],
+            7,
+            5,
+            11,
+            9,
+            15,
+            11,
+            17,
+            12,
+          ],
+          'heatmap-opacity': fileStorage
+            ? [
+                'interpolate',
+                ['linear'],
+                ['zoom'],
+                6,
+                0.72,
+                13,
+                0.55,
+                14.7,
+                0,
+              ]
+            : [
+                'interpolate',
+                ['linear'],
+                ['zoom'],
+                6,
+                0.72,
+                13,
+                0.58,
+                15,
+                0.32,
+                17,
+                0,
+              ],
           'heatmap-color': [
             'interpolate',
             ['linear'],
@@ -147,9 +207,11 @@ export function createMapStyle(visualMode: boolean, fileStorage = false): StyleS
         type: 'heatmap',
         source: 'heatmap',
         ...(fileStorage ? {} : { 'source-layer': 'density' }),
-        ...(fileStorage ? { filter: ['==', ['get', 'kind'], 'density'] } : {}),
+        ...(fileStorage
+          ? { filter: ['==', ['get', 'kind'], 'density'] }
+          : {}),
         minzoom: 9,
-        maxzoom: 18,
+        maxzoom: fileStorage ? 14.5 : 17,
         paint: {
           'heatmap-weight': [
             'interpolate',
@@ -162,9 +224,53 @@ export function createMapStyle(visualMode: boolean, fileStorage = false): StyleS
             12,
             1,
           ],
-          'heatmap-intensity': ['interpolate', ['linear'], ['zoom'], 9, 0.72, 14, 1.1, 18, 1.5],
-          'heatmap-radius': ['interpolate', ['linear'], ['zoom'], 9, 2.5, 13, 5, 18, 10],
-          'heatmap-opacity': ['interpolate', ['linear'], ['zoom'], 9, 0.78, 18, 0.54],
+          'heatmap-intensity': [
+            'interpolate',
+            ['linear'],
+            ['zoom'],
+            9,
+            0.72,
+            14,
+            1.05,
+            16,
+            1.15,
+          ],
+          'heatmap-radius': [
+            'interpolate',
+            ['linear'],
+            ['zoom'],
+            9,
+            2.5,
+            13,
+            5,
+            16,
+            7,
+          ],
+          'heatmap-opacity': fileStorage
+            ? [
+                'interpolate',
+                ['linear'],
+                ['zoom'],
+                9,
+                0.75,
+                13,
+                0.5,
+                14.5,
+                0,
+              ]
+            : [
+                'interpolate',
+                ['linear'],
+                ['zoom'],
+                9,
+                0.75,
+                14,
+                0.5,
+                16,
+                0.18,
+                17,
+                0,
+              ],
           'heatmap-color': [
             'interpolate',
             ['linear'],
@@ -189,9 +295,19 @@ export function createMapStyle(visualMode: boolean, fileStorage = false): StyleS
         minzoom: 13,
         paint: {
           'line-color': '#6b20ef',
-          'line-width': ['interpolate', ['linear'], ['zoom'], 13, 1.2, 18, 5.5],
-          'line-opacity': ['interpolate', ['linear'], ['zoom'], 13, 0.15, 18, 0.34],
-          'line-blur': ['interpolate', ['linear'], ['zoom'], 13, 0.5, 18, 2.4],
+          'line-width': ['interpolate', ['linear'], ['zoom'], 13, 1, 18, 4.5],
+          'line-opacity': [
+            'interpolate',
+            ['linear'],
+            ['zoom'],
+            13,
+            0.12,
+            16,
+            0.3,
+            18,
+            0.42,
+          ],
+          'line-blur': ['interpolate', ['linear'], ['zoom'], 13, 0.4, 18, 1.7],
         },
       },
       {
@@ -203,8 +319,16 @@ export function createMapStyle(visualMode: boolean, fileStorage = false): StyleS
         minzoom: 14,
         paint: {
           'line-color': '#5010ca',
-          'line-width': ['interpolate', ['linear'], ['zoom'], 14, 0.45, 18, 1.4],
-          'line-opacity': ['interpolate', ['linear'], ['zoom'], 14, 0.26, 18, 0.52],
+          'line-width': ['interpolate', ['linear'], ['zoom'], 14, 0.55, 18, 1.6],
+          'line-opacity': [
+            'interpolate',
+            ['linear'],
+            ['zoom'],
+            14,
+            0.32,
+            18,
+            0.68,
+          ],
         },
       },
     ],
