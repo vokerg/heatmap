@@ -11,6 +11,32 @@
       <strong>{{ distanceKilometers() | number: '1.0-0' }}</strong>
       <span>km</span>
     </div>
+    <div class="import-controls">
+      <select #sportSelect aria-label="Fallback sport for imported files">
+        <option value="">Auto sport</option>
+        <option value="Ride">Ride</option>
+        <option value="Run">Run</option>
+        <option value="Walk">Walk</option>
+        <option value="Hike">Hike</option>
+      </select>
+      <input
+        #activityUpload
+        data-testid="activity-upload"
+        class="file-input"
+        type="file"
+        multiple
+        accept=".gpx,.gpx.gz,.geojson,.json,.fit,.fit.gz,application/gpx+xml,application/geo+json,application/json"
+        (change)="importFiles($event, sportSelect.value)"
+      />
+      <button
+        class="import"
+        type="button"
+        [disabled]="importing()"
+        (click)="activityUpload.click()"
+      >
+        {{ importing() ? 'Importing…' : 'Import files' }}
+      </button>
+    </div>
     <button class="reset" type="button" (click)="resetView()">Reset view</button>
   </header>
 
@@ -22,6 +48,16 @@
       <p>Corridors merge as you zoom out and resolve into individual routes at street level.</p>
       <div class="zoom-readout">Zoom {{ zoom() | number: '1.1-1' }}</div>
     </section>
+    @if (importStatus()) {
+      <div
+        data-testid="import-status"
+        class="import-status"
+        [class.import-status-error]="importFailed()"
+        role="status"
+      >
+        {{ importStatus() }}
+      </div>
+    }
     <div class="legend" aria-label="Heatmap density legend">
       <span>Less</span>
       <i class="density density-low"></i>
