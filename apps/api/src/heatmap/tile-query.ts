@@ -2,7 +2,7 @@ import { profileForZoom } from './profile.js';
 
 export interface TileQuery {
   text: string;
-  values: readonly unknown[];
+  values: unknown[];
 }
 
 export function buildTileQuery(
