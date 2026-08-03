@@ -17,7 +17,7 @@ export function buildTileQuery(
       , route_features AS (
           SELECT
             row_number() OVER ()::bigint AS feature_id,
-            sport_type,
+            a.sport_type AS sport_type,
             ST_AsMVTGeom(
               ST_SimplifyPreserveTopology(
                 ST_Intersection(a.geom_3857, p.query_bounds),
@@ -31,7 +31,10 @@ export function buildTileQuery(
           FROM activities a
           CROSS JOIN params p
           WHERE a.geom_3857 && p.query_bounds
-            AND (p.sport_type IS NULL OR a.sport_type = p.sport_type)
+            AND (
+              p.filter_sport_type IS NULL OR
+              a.sport_type = p.filter_sport_type
+            )
         ), route_tile AS (
           SELECT COALESCE(ST_AsMVT(route_features, 'routes', 4096, 'geom', 'feature_id'), '\\x'::bytea) AS tile
           FROM route_features
@@ -49,7 +52,7 @@ export function buildTileQuery(
           $4::double precision AS cell_meters,
           $5::double precision AS sample_meters,
           $6::double precision AS simplify_meters,
-          $7::text AS sport_type
+          $7::text AS filter_sport_type
       ), sampled_points AS (
         SELECT ST_SnapToGrid((dumped).geom, p.cell_meters) AS geom
         FROM activities a
@@ -61,7 +64,10 @@ export function buildTileQuery(
           )
         ) AS dumped
         WHERE a.geom_3857 && p.query_bounds
-          AND (p.sport_type IS NULL OR a.sport_type = p.sport_type)
+          AND (
+            p.filter_sport_type IS NULL OR
+            a.sport_type = p.filter_sport_type
+          )
       ), density_cells AS (
         SELECT geom, COUNT(*)::integer AS weight
         FROM sampled_points
