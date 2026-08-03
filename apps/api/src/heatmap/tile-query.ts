@@ -21,7 +21,7 @@ export function buildTileQuery(
             ST_AsMVTGeom(
               ST_SimplifyPreserveTopology(
                 ST_Intersection(a.geom_3857, p.query_bounds),
-                $6
+                p.simplify_meters
               ),
               p.tile_bounds,
               4096,
@@ -31,7 +31,7 @@ export function buildTileQuery(
           FROM activities a
           CROSS JOIN params p
           WHERE a.geom_3857 && p.query_bounds
-            AND ($7::text IS NULL OR a.sport_type = $7)
+            AND (p.sport_type IS NULL OR a.sport_type = p.sport_type)
         ), route_tile AS (
           SELECT COALESCE(ST_AsMVT(route_features, 'routes', 4096, 'geom', 'feature_id'), '\\x'::bytea) AS tile
           FROM route_features
@@ -44,20 +44,24 @@ export function buildTileQuery(
     text: `
       WITH params AS (
         SELECT
-          ST_TileEnvelope($1, $2, $3) AS tile_bounds,
-          ST_TileEnvelope($1, $2, $3, margin => 0.0625) AS query_bounds
+          ST_TileEnvelope($1::integer, $2::integer, $3::integer) AS tile_bounds,
+          ST_TileEnvelope($1::integer, $2::integer, $3::integer, margin => 0.0625) AS query_bounds,
+          $4::double precision AS cell_meters,
+          $5::double precision AS sample_meters,
+          $6::double precision AS simplify_meters,
+          $7::text AS sport_type
       ), sampled_points AS (
-        SELECT ST_SnapToGrid((dumped).geom, $4) AS geom
+        SELECT ST_SnapToGrid((dumped).geom, p.cell_meters) AS geom
         FROM activities a
         CROSS JOIN params p
         CROSS JOIN LATERAL ST_DumpPoints(
           ST_Segmentize(
             ST_CollectionExtract(ST_Intersection(a.geom_3857, p.query_bounds), 2),
-            $5
+            p.sample_meters
           )
         ) AS dumped
         WHERE a.geom_3857 && p.query_bounds
-          AND ($7::text IS NULL OR a.sport_type = $7)
+          AND (p.sport_type IS NULL OR a.sport_type = p.sport_type)
       ), density_cells AS (
         SELECT geom, COUNT(*)::integer AS weight
         FROM sampled_points
